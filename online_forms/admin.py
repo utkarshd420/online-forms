@@ -1,7 +1,7 @@
 from django.contrib import admin
 from online_forms.models import *
 from django.db.models.signals import pre_save
-from django.dispatch import receiver
+from django.dispatch import receiver,Signal
 import hashlib
 # Register your models here.
 class ElementsShowInline(admin.StackedInline):
@@ -11,6 +11,12 @@ class ElementsShowInline(admin.StackedInline):
 		('Add Elements to Form', {'fields': ['title','description','Input','required','priority']}),
        
 	]
+'''	def save_model(self,request,obj,form,change):
+		print obj.parent_id
+		if obj.parent_id is None:
+			obj.parent_id = obj.form_id
+		obj.save()'''
+		
 class form_object_table_admin(admin.ModelAdmin):
 	fieldsets = [
 		('Form', {'fields': ['form_title','form_description']}),
@@ -27,8 +33,8 @@ class form_object_table_admin(admin.ModelAdmin):
 			form_list = form_table.objects.filter(user=user_)
 			return qs.filter(form=form_list)
 	def save_model(self,request,obj,form,change):
-		obj.response_url = hashlib.md5(request.user.username+obj.form_title).hexdigest()
-		obj.form_url = hashlib.sha1(request.user.username+obj.form_title).hexdigest()
+		obj.response_url = hashlib.md5(request.user.username+str(obj.form_id)).hexdigest()
+		obj.form_url = hashlib.sha1(request.user.username+str(obj.form_id)).hexdigest()
 		if obj.form_id is None:
 			user_ = user_table.objects.get(username=request.user.username)
 			curr_form = form_table(user = user_ , form_permissions = 1)
@@ -42,13 +48,11 @@ admin.site.register(user_info)
 admin.site.register(form_object_table,form_object_table_admin)
 admin.site.register(form_table)
 admin.site.register(input_object_table)
-'''@receiver(pre_save,sender=form_object_table)
-def create_form_per_user(sender,instance,**kwargs):
-#	print instance.form_id
-	if instance.form_id is None:
-		curr_form = form_table(user = request.user, form_permissions = 1)
-		curr_form.save()
-		instance.form_id = curr_form.id
-	signals.pre_save.disconnect(create_form_per_user,sender=form_object_table)
+@receiver(pre_save,sender=elements_table)
+def create_parent_per_element(sender,instance,**kwargs):
+	print instance.parent_id
+	if instance.parent_id is None:
+		instance.parent_id = instance.form_object.form_id
+	pre_save.disconnect(create_parent_per_element,sender=elements_table)
 	instance.save()
-	signals.pre_save.connect(create_form_per_user,sender=form_object_table)'''
+	pre_save.connect(create_parent_per_element,sender=elements_table)

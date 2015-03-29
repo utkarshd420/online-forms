@@ -29,6 +29,9 @@ class form_object_table(models.Model):
 	form_title = models.CharField(max_length=200)
 	form_description = models.CharField(max_length=500)
 	flag = models.BooleanField("Form is Active or Not",default=True)
+	class Meta:
+		verbose_name = 'Form'
+		verbose_name_plural = 'Forms'
 
 class elements_table(models.Model):
 	form_object = models.ForeignKey(form_object_table)
@@ -43,6 +46,8 @@ class elements_table(models.Model):
 class input_object_table(models.Model):
 	input_id = models.AutoField(primary_key=True)
 	input_type = models.CharField(max_length=100)
+	def __str__(self):
+		return self.input_type
 
 class response_object_table(models.Model):
 	user = models.ForeignKey(user_table)
