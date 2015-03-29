@@ -58,6 +58,7 @@ admin.site.register(user_info)
 admin.site.register(form_object_table,form_object_table_admin)
 admin.site.register(form_table)
 admin.site.register(input_object_table)
+admin.site.register(response_object_table)
 @receiver(pre_save,sender=elements_table)
 def create_parent_per_element(sender,instance,**kwargs):
 	if instance.parent_id is None:

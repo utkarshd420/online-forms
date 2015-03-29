@@ -25,14 +25,15 @@
 			<tr>
 				<td>
 				{% ifequal element.required True  %}
-				<input type="{{element.input_type}}" required />
+				<input id = "{{element.id}}" name = "{{element.id}}"type="{{element.input_type}}" required />
 				{% else %}
-				<input type="{{elment.input_type}}" />
+				<input id = "{{element.id}}" name = "{{element.id}}" type="{{elment.input_type}}" />
 				{% endifequal %}
 				</td>
 			</tr>
 		{% endfor %}
 		</table>
+		</br><input type= "submit" value = "Submit" />
 	</form>
 </body>
 </html>

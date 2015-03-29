@@ -6,6 +6,8 @@ class user_table(models.Model):
 	user_id = models.AutoField(primary_key=True)
 	username = models.CharField(unique=True,max_length=100)
 	password = models.CharField(max_length=100)
+	def __str__(self):
+		return self.username
 
 class user_info(models.Model):
 	user = models.ForeignKey(user_table)
@@ -21,6 +23,8 @@ class form_table(models.Model):
 	user = models.ForeignKey(user_table)
 	form_id = models.AutoField(primary_key=True)
 	form_permissions = models.IntegerField()
+	def __str__(self):
+		return str(self.form_id)
 
 class form_object_table(models.Model):
 	form = models.ForeignKey(form_table,primary_key=True)
@@ -42,6 +46,8 @@ class elements_table(models.Model):
 	description = models.TextField();
 	title = models.CharField(max_length=1000)
 	priority = models.IntegerField()
+	def __str__(self):
+		return str(self.elements_id)
 
 class input_object_table(models.Model):
 	input_id = models.AutoField(primary_key=True)
@@ -55,7 +61,5 @@ class response_object_table(models.Model):
 	elements = models.ForeignKey(elements_table)
 	response_string = models.TextField()
 	response_time = models.DateField()
-	class Meta:
-		unique_together = (("user","form","elements"),)
 
 

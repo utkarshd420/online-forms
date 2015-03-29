@@ -10,6 +10,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from models import *
+from datetime import datetime
 # Create your views here.
 
 @csrf_exempt
@@ -71,8 +72,6 @@ def signup(request):
 @csrf_exempt
 def fill_form(request,**kwargs):
 	if request.method == 'GET':
-		if request.user is None:
-			raise Http404('login to view.')
 		form_hash_id = kwargs.get('form_hash')
 		print form_hash_id
 		f_obj = form_object_table.objects.filter(form_url = form_hash_id)
@@ -93,6 +92,28 @@ def fill_form(request,**kwargs):
 				ndict['description'] = ele.description
 				ndict['required'] = ele.required
 				ndict['input_type'] = ele.Input.input_type 
+				ndict['id']= ele.elements_id
 				render_list.append(ndict)
 			print render_list
 			return render_to_response('display.html',{'title':f_title,'description':f_desc,'elements':render_list})
+
+	if request.method == 'POST':
+		form_hash_id = kwargs.get('form_hash')
+		print form_hash_id
+		f_obj = form_object_table.objects.filter(form_url = form_hash_id)
+		print f_obj
+		if len(f_obj) is 0:
+			raise Http404('Some Error Occured!!')
+		else:
+			f_obj = f_obj[0]
+			user_ = None
+			if not request.user.is_authenticated():
+				user_ = user_table.objects.get(username='anonymous@anon.com')
+			else:
+				user_ = user_table.objects.get(username = request.user.email)
+			elements_list = elements_table.objects.filter(form_object = f_obj)
+			for elements in elements_list:
+				ele_string = request.POST.get(str(elements.elements_id))	
+				response = response_object_table(user=user_,form=f_obj.form,elements = elements,response_string = ele_string,response_time=datetime.now())
+				response.save()
+			return render_to_response('thanks.html',{'form_resubmit':request.get_full_path()})
