@@ -8,7 +8,7 @@ from django.contrib import staticfiles
 import datetime, hashlib, json,os, random
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-
+from django.http import Http404
 from models import *
 # Create your views here.
 
@@ -67,3 +67,32 @@ def signup(request):
 			new_user_obj = user_info(user=form_new_user,first_name=user_firstname,last_name=user_lastname,group=user_group)
 			new_user_obj.save()
 			return HttpResponseRedirect('../../admin/')
+
+@csrf_exempt
+def fill_form(request,**kwargs):
+	if request.method == 'GET':
+		if request.user is None:
+			raise Http404('login to view.')
+		form_hash_id = kwargs.get('form_hash')
+		print form_hash_id
+		f_obj = form_object_table.objects.filter(form_url = form_hash_id)
+		print f_obj
+		if len(f_obj) is 0 :
+			raise Http404('Form Not Found.')
+		else:
+			f_obj = f_obj[0]
+			print f_obj.form_id
+			print f_obj.form_title
+			f_elements = elements_table.objects.filter(form_object = f_obj).order_by('priority')
+			f_title = f_obj.form_title
+			f_desc = f_obj.form_description
+			render_list = list()
+			for ele in f_elements:
+				ndict = dict()
+				ndict['title'] = ele.title
+				ndict['description'] = ele.description
+				ndict['required'] = ele.required
+				ndict['input_type'] = ele.Input.input_type 
+				render_list.append(ndict)
+			print render_list
+			return render_to_response('display.html',{'title':f_title,'description':f_desc,'elements':render_list})

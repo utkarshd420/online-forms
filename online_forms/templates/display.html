@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<h2>{{title}}</h2>
+	<hr>
+	<h3>{{description}}</h3>
+	<hr>
+	<form action="" method="POST">
+		<table>
+		{% for element in elements%}
+			<tr>
+				<td>
+				<h3>{{element.title}}</h3>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				{{element.description}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				{% ifequal element.required True  %}
+				<input type="{{element.input_type}}" required />
+				{% else %}
+				<input type="{{elment.input_type}}" />
+				{% endifequal %}
+				</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</form>
+</body>
+</html>
