@@ -20,13 +20,13 @@ class ElementsShowInline(admin.StackedInline):
 		
 class form_object_table_admin(admin.ModelAdmin):
 	fieldsets = [
-		('Form', {'fields': ['form_title','form_description']}),
+		('Form', {'fields': ['form_title','form_description','flag']}),
        
 	]
 	inlines = [ElementsShowInline]
 	list_display = ('form_title','form_description','form_response_link','form_view_link')
 	def form_response_link(self,obj):
-		return "<a href='../fill/%s'>Click Here</a>" % (obj.response_url)
+		return "<a href='../../../forms/view/%s'>Click Here</a>" % (obj.response_url)
 	def form_view_link(self,obj):
 		return "<a href='../../../forms/fill/%s'>Click Here</a>" % (obj.form_url)
 	form_response_link.allow_tags = True

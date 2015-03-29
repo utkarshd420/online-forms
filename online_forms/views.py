@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from models import *
 from datetime import datetime
+import json
 # Create your views here.
 
 @csrf_exempt
@@ -78,6 +79,8 @@ def fill_form(request,**kwargs):
 		print f_obj
 		if len(f_obj) is 0 :
 			raise Http404('Form Not Found.')
+		if f_obj[0].flag is False:
+			raise Http404('Form not active.')
 		else:
 			f_obj = f_obj[0]
 			print f_obj.form_id
@@ -117,3 +120,27 @@ def fill_form(request,**kwargs):
 				response = response_object_table(user=user_,form=f_obj.form,elements = elements,response_string = ele_string,response_time=datetime.now())
 				response.save()
 			return render_to_response('thanks.html',{'form_resubmit':request.get_full_path()})
+
+@csrf_exempt
+def view_form(request, **kwargs):
+	if not request.user.is_authenticated():
+		raise Http404('Please Log in to view this form')
+	else:
+		
+		form_hash_id = kwargs.get('form_hash')
+		f_obj = form_object_table.objects.filter(response_url = form_hash_id)
+		if len(f_obj) is 0:
+			raise Http404('Form not found')
+		else:
+			f_obj = f_obj[0]
+			response_list = response_object_table.objects.filter(form=f_obj.form)
+			render_list = list()
+			element_list = list()
+			for response in response_list:
+				ndict = dict()
+				ndict['username'] = response.user.username
+				ndict[response.elements.title] = response.response_string
+				ndict['Submission Time'] = str(response.response_time)
+				render_list.append(ndict)
+			print json.dumps(render_list)
+			return render_to_response('spreadsheet.html',{'form_title':f_obj.form_title,'response':json.dumps(render_list)})

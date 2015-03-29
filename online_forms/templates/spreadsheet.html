@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% load staticfiles %}
+<link href="{% static "jquery.wijmo-pro.all.3.20131.3.min.css" %}" rel="stylesheet" media="screen">
+<link href="{% static "jquery.wijmo.wijspread.1.20131.1.css" %}" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="{% static "jquery-wijmo.css" %}">
+<script src="{% static "jquery-1.8.2.min.js" %}"></script>
+<script src="{% static "jquery-ui.min.js" %}"></script>
+<script src="{% static "jquery.wijmo-pro.all.3.20131.3.min.js" %}"></script>
+<script src="{% static "jquery.wijmo-open.all.3.20131.3.min.js" %}"></script>
+<script src="{% static "jquery.wijmo.wijspread.all.1.20131.1.min.js" %}"></script>
+<script>
+	$(document).ready(function(){
+		$('#ss').wijspread({sheetCount:1});
+		var spread = $("#ss").wijspread("spread");
+		var sheet = spread.getActiveSheet();
+		var arr = $.parseJSON($("#val").html());
+		console.log(arr);
+		sheet.setDataSource(arr);
+	});
+</script>
+</head>
+<body>
+	<div id="val" style="display:none">{{response}}</div>
+	<div id="ss">	</div>
+</body>
+</html>
+
+
+
