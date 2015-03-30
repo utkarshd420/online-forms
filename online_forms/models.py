@@ -62,4 +62,8 @@ class response_object_table(models.Model):
 	response_string = models.TextField()
 	response_time = models.DateField()
 
-
+class choice(models.Model):
+	elements = models.ForeignKey(elements_table)
+	choice_id = models.AutoField(primary_key=True)
+	choice_description = models.CharField(max_length=500)
+	

@@ -137,10 +137,16 @@ def view_form(request, **kwargs):
 			render_list = list()
 			element_list = list()
 			for response in response_list:
-				ndict = dict()
+				if not response.elements.title in element_list:
+					element_list.append(response.elements.title)
+			ndict = dict()
+			for element_title in element_list:
+				ndict[element_title] = ' '
+			for response in response_list:
 				ndict['username'] = response.user.username
 				ndict[response.elements.title] = response.response_string
 				ndict['Submission Time'] = str(response.response_time)
-				render_list.append(ndict)
-			print json.dumps(render_list)
-			return render_to_response('spreadsheet.html',{'form_title':f_obj.form_title,'response':json.dumps(render_list)})
+				print json.dumps(ndict)
+				ndict['username'] = ''
+				ndict['Submission Time'] = ''
+			return render_to_response('spreadsheet.html',{'form_title':f_obj.form_title, 'response':json.dumps(ndict)})

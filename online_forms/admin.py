@@ -4,10 +4,15 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver,Signal
 from django.http import HttpResponse, HttpRequest
 import hashlib
+from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 # Register your models here.
-class ElementsShowInline(admin.StackedInline):
+class ChoiceTypeInline(NestedStackedInline):
+	model = choice
+	extra = 0
+class ElementsShowInline(NestedStackedInline):
 	model=elements_table
 	extra=0
+	inlines = [ChoiceTypeInline]
 	fieldsets = [
 		('Add Elements to Form', {'fields': ['title','description','Input','required','priority']}),
        
@@ -18,7 +23,7 @@ class ElementsShowInline(admin.StackedInline):
 			obj.parent_id = obj.form_id
 		obj.save()'''
 		
-class form_object_table_admin(admin.ModelAdmin):
+class form_object_table_admin(NestedModelAdmin):
 	fieldsets = [
 		('Form', {'fields': ['form_title','form_description','flag']}),
        

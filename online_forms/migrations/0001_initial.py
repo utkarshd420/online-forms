@@ -11,6 +11,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='choice',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('choice_description', models.CharField(max_length=500)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='elements_table',
             fields=[
                 ('elements_id', models.AutoField(serialize=False, primary_key=True)),
@@ -45,6 +55,8 @@ class Migration(migrations.Migration):
                 ('flag', models.BooleanField(default=True, verbose_name=b'Form is Active or Not')),
             ],
             options={
+                'verbose_name': 'Form',
+                'verbose_name_plural': 'Forms',
             },
             bases=(models.Model,),
         ),
@@ -115,10 +127,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='online_forms.user_table'),
             preserve_default=True,
         ),
-        migrations.AlterUniqueTogether(
-            name='response_object_table',
-            unique_together=set([('user', 'form', 'elements')]),
-        ),
         migrations.AddField(
             model_name='form_table',
             name='user',
@@ -135,6 +143,12 @@ class Migration(migrations.Migration):
             model_name='elements_table',
             name='form_object',
             field=models.ForeignKey(to='online_forms.form_object_table'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='choice',
+            name='elements',
+            field=models.ForeignKey(to='online_forms.elements_table'),
             preserve_default=True,
         ),
     ]
