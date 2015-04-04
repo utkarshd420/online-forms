@@ -38,7 +38,7 @@ class form_object_table(models.Model):
 		verbose_name_plural = 'Forms'
 
 class elements_table(models.Model):
-	form_object = models.ForeignKey(form_object_table)
+	form_object = models.ForeignKey('form_object_table')
 	elements_id = models.AutoField(primary_key=True)
 	parent_id = models.IntegerField()
 	Input = models.ForeignKey('input_object_table')
@@ -63,7 +63,7 @@ class response_object_table(models.Model):
 	response_time = models.DateField()
 
 class choice(models.Model):
-	elements = models.ForeignKey(elements_table)
+	elements = models.ForeignKey('elements_table')
 	choice_id = models.AutoField(primary_key=True)
 	choice_description = models.CharField(max_length=500)
 	

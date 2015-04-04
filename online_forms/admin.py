@@ -4,19 +4,20 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver,Signal
 from django.http import HttpResponse, HttpRequest
 import hashlib
-from nested_inline.admin import NestedStackedInline, NestedModelAdmin
+from nested_inline.admin import NestedStackedInline, NestedTabularInline, NestedModelAdmin
 # Register your models here.
 class ChoiceTypeInline(NestedStackedInline):
 	model = choice
 	extra = 0
 class ElementsShowInline(NestedStackedInline):
 	model=elements_table
-	extra=0
-	inlines = [ChoiceTypeInline]
+	extra= 1
+	inlines = [ChoiceTypeInline,]
 	fieldsets = [
 		('Add Elements to Form', {'fields': ['title','description','Input','required','priority']}),
        
 	]
+
 '''	def save_model(self,request,obj,form,change):
 		print obj.parent_id
 		if obj.parent_id is None:
@@ -28,7 +29,7 @@ class form_object_table_admin(NestedModelAdmin):
 		('Form', {'fields': ['form_title','form_description','flag']}),
        
 	]
-	inlines = [ElementsShowInline]
+	inlines = [ElementsShowInline,]
 	list_display = ('form_title','form_description','form_response_link','form_view_link')
 	def form_response_link(self,obj):
 		return "<a href='../../../forms/view/%s'>Click Here</a>" % (obj.response_url)

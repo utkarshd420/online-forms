@@ -139,14 +139,39 @@ def view_form(request, **kwargs):
 			for response in response_list:
 				if not response.elements.title in element_list:
 					element_list.append(response.elements.title)
-			ndict = dict()
+			count=0
+			element_dict = dict()
 			for element_title in element_list:
-				ndict[element_title] = ' '
+				count = count+1
+				element_dict[element_title]=''
+
+			k=0
 			for response in response_list:
+				ndict = dict()
 				ndict['username'] = response.user.username
-				ndict[response.elements.title] = response.response_string
+				for element_title in element_list:
+					ndict[element_title] = ' '
+				element_dict[response.elements.title] = response.response_string
+				#ndict[response.elements.title] = response.response_string
 				ndict['Submission Time'] = str(response.response_time)
+				k=k+1
 				print json.dumps(ndict)
-				ndict['username'] = ''
+				if count == k:
+					k=0
+					for element_title in element_list:
+						ndict[element_title]=element_dict[element_title]
+					for p in xrange(0,100):
+						ndict[str(p)] = ' '
+					render_list.append(ndict)
+			print json.dumps(render_list)
+			for k in xrange(0,100):
+				ndict = dict()
+				ndict['username'] =''
+				for element_title in element_list:
+					ndict[element_title] = ' '
 				ndict['Submission Time'] = ''
-			return render_to_response('spreadsheet.html',{'form_title':f_obj.form_title, 'response':json.dumps(ndict)})
+				for p in xrange(0,100):
+					ndict[str(p)] = ' '
+				render_list.append(ndict)
+			
+			return render_to_response('spreadsheet.html',{'form_title':f_obj.form_title, 'response':json.dumps(render_list)})
