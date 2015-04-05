@@ -96,7 +96,7 @@ def fill_form(request,**kwargs):
 				ndict['required'] = ele.required
 				ndict['input_type'] = ele.Input.input_type 
 				choice_vals = list()
-				if ele.Input.input_type == 'radio':
+				if ele.Input.input_type == 'radio' or ele.Input.input_type == 'select':
 					choices = choice.objects.filter(elements=ele)
 					for choice_v in choices:
 						choice_vals.append(choice_v.choice_description)
