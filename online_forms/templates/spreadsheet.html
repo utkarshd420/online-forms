@@ -18,14 +18,11 @@
 		var sheet = spread.getActiveSheet();
 		var arr = $.parseJSON($("#val").html());
 		console.log(arr);
-//		sheet.autoGenerateColumns = true;
 		sheet.setDataSource(arr);
-		sheet.repaint();
 	});
 </script>
 </head>
 <body>
-	<h2>{{form_title}}</h2>
 	<div id="val" style="display:none">{{response}}</div>
 	<div id="ss">	</div>
 </body>

@@ -95,6 +95,12 @@ def fill_form(request,**kwargs):
 				ndict['description'] = ele.description
 				ndict['required'] = ele.required
 				ndict['input_type'] = ele.Input.input_type 
+				choice_vals = list()
+				if ele.Input.input_type == 'radio':
+					choices = choice.objects.filter(elements=ele)
+					for choice_v in choices:
+						choice_vals.append(choice_v.choice_description)
+				ndict['choices'] = choice_vals
 				ndict['id']= ele.elements_id
 				render_list.append(ndict)
 			print render_list
@@ -160,18 +166,18 @@ def view_form(request, **kwargs):
 					k=0
 					for element_title in element_list:
 						ndict[element_title]=element_dict[element_title]
-					for p in xrange(0,100):
-						ndict[str(p)] = ' '
+					'''for p in xrange(0,100):
+						ndict[str(p)] = '''
 					render_list.append(ndict)
 			print json.dumps(render_list)
-			for k in xrange(0,100):
+			'''for k in xrange(0,100):
 				ndict = dict()
-				ndict['username'] =''
+				ndict['username'] =' '
 				for element_title in element_list:
 					ndict[element_title] = ' '
-				ndict['Submission Time'] = ''
+				ndict['Submission Time'] = ' '
 				for p in xrange(0,100):
-					ndict[str(p)] = ' '
-				render_list.append(ndict)
+					ndict[str(p)] = 
+				render_list.append(ndict)'''
 			
 			return render_to_response('spreadsheet.html',{'form_title':f_obj.form_title, 'response':json.dumps(render_list)})
